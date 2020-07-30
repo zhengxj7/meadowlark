@@ -10,6 +10,12 @@ app.set('port', process.env.PORT || 3000);
 
 app.use(express.static(__dirname + '/public'));
 
+// test
+app.use(function(req, res) {
+    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
+    next();
+});
+
 app.get('/', function(req, res) {
     // res.type('text/plain');
     // res.send('Meadowlark Travel');
@@ -19,7 +25,10 @@ app.get('/', function(req, res) {
 app.get('/about', function(req, res) {
     // res.type('text/plain');
     // res.send('About Meadowlark Travel');
-    res.render('about', { fortune: fortune.getFortune() });
+    res.render('about', { 
+        fortune: fortune.getFortune(),
+        pageTestScript: '/qa/tests-about.js'
+    });
 });
 
 // 404 catch-all 处理器（中间件）
