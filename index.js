@@ -1,9 +1,9 @@
 var express = require('express');
 var app = express();
-var handlebars = require('express3-handlebars').create({
-    defaultLayout: 'main'
-});
-
+var handlebars = require('express-handlebars')
+    .create({ defaultLayout: 'main' });
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
 var fortune = require('./lib/fortune');
 
 app.set('port', process.env.PORT || 3000);
@@ -11,7 +11,7 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public'));
 
 // test
-app.use(function(req, res) {
+app.use(function(req, res, next) {
     res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
     next();
 });
@@ -47,9 +47,6 @@ app.use(function(err, req, res, next) {
     // res.send('500 - Server Error');
     res.render('500');
 });
-
-app.engine('handlebars', handlebars.engine);
-app.set('view engine', 'handlebars');
 
 app.listen(app.get('port'), function() {
     console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
